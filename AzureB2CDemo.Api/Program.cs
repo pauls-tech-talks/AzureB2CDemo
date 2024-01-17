@@ -17,6 +17,15 @@ builder.Services
             ValidIssuer = config["Jwt:Issuer"],
             ValidateLifetime = true,
         };
+        o.Events = new()
+        {
+            OnMessageReceived = ctx =>
+            {
+                var cookieName = config["Jwt:CookieName"] ?? string.Empty;
+                ctx.Token ??= ctx.Request.Cookies[cookieName];
+                return Task.CompletedTask;  
+            },
+        };
     });
 
 builder.Services
